@@ -2,7 +2,8 @@
 # Target
 # ---------------------------------------------------------
 # make debug-st DEBUG=TRUE
-PROJECT ?= demo
+
+PROJECT ?= simpit
 
 V ?= 0
 
@@ -59,12 +60,16 @@ include $(MAKE_DIR)/sysdiag.mk
 # ---------------------------------------------------------
 # Sources, Includes, Linker
 # ---------------------------------------------------------
-SRC = $(shell find $(SRC_DIR) -name '*.c')# Find all (.c) source files
+SRC = $(notdir($(shell find $(SRC_DIR) -name '*.c'))# Find all (.c) source files
+
+$(info $(SRC))
 
 INC = $(shell find $(SRC_DIR) -type d) \
 	$(MODULE_DIR)/libopencm3/include
 
-LDSCRIPT = asd
+LDSCRIPT = $(SRC_DIR)/board/stm32_f103.ld
+
+VPATH += $(SRC_DIR)
 
 # ---------------------------------------------------------
 # Compiler, Architecture and linker flags
@@ -164,7 +169,7 @@ clean:
 
 help:
 	@echo ""
-	@echo "\t\tZort"
+	@echo "\t\tSimPit"
 	@echo ""
 	@echo "------------------------------ [Usage] ------------------------------"
 	@echo "make help\tShow this help message"

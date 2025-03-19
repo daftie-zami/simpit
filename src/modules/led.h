@@ -1,5 +1,9 @@
 #pragma once
 
-#define LED_SET(set) gpio_set()
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/gpio.h>
 
-void led_init();
+#define LED_SET() gpio_set(LED_PORT,LED_PIN)
+#define LED_RESET() gpio_reset(LED_PORT,LED_PIN)
+
+void led_init(void);
