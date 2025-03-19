@@ -1,0 +1,10 @@
+build
+.vscode
+*.o
+*.d
+*.asm
+*.hex
+*.bin
+*.elf
+*.map
+*.out
