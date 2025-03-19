@@ -60,43 +60,14 @@ include $(MAKE_DIR)/sysdiag.mk
 # ---------------------------------------------------------
 # Sources, Includes and Libraries
 # ---------------------------------------------------------
-SRC = $(notdir($(shell find $(SRC_DIR) -name '*.c'))# Find all (.c) source files
+SRC = $(notdir $(shell find $(SRC_DIR) -name '*.c'))
 
-$(info $(SRC))
-
-INC = $(shell find $(SRC_DIR) -type d) \
+INC += $(shell find $(SRC_DIR) -type d) \
 	$(MODULE_DIR)/libopencm3/include
 
 LDSCRIPT = $(SRC_DIR)/board/stm32_f103.ld
 
-VPATH += $(SRC_DIR)
-
-# ---------------------------------------------------------
-# Compiler, Architecture and linker flags
-# ---------------------------------------------------------
-ARCH_FLAGS := -mthumb -mcpu=cortex-m3 -msoft-float
-
-CFLAGS = $(ARCH_FLAGS) \
-	$(addprefix -I,$(INC)) \
-	-DSTM32F1
-	-std=gnu17 \
-	-ffreestanding \
-	$(DEBUG_MACRO) \
-	-Wall -Wextra -Werror \
-	-fdata-sections \
-	-ffunction-sections \
-	$(DEBUG_FLAG) $(OPTIMIZE_FLAG) \
-	-MMD -MP -MF$(TARGET_DEP_DIR)/$*.d
-
-LDFLAGS = -lc -lm -lnosys -lopencm3_stm32f1 \
-	--static \
-	-nostartfiles \
-	-specs=nano.specs \
-	-L$(MODULE_DIR)/libopencm3/lib -T$(LDSCRIPT) \
-	$(ARCH_FLAGS) $(DEBUG_FLAG) \
-	-Wl,-Map=$(TARGET_MAP),--cref \
-	-Wl,--gc-sections \
-	-Wl,--print-memory-usage
+VPATH += $(INC)
 
 # ---------------------------------------------------------
 # Things we will build
@@ -115,6 +86,33 @@ TARGET_OBJS  = $(addprefix $(TARGET_OBJ_DIR)/, $(SRC:.c=.o))
 TARGET_DEPS  = $(addprefix $(TARGET_DEP_DIR)/, $(SRC:.c=.d))
 
 # ---------------------------------------------------------
+# Compiler, Architecture and linker flags
+# ---------------------------------------------------------
+ARCH_FLAGS := -mthumb -mcpu=cortex-m3 -msoft-float
+
+CFLAGS = $(ARCH_FLAGS) \
+	$(addprefix -I,$(INC)) \
+	-DSTM32F1 \
+	-std=gnu17 \
+	-ffreestanding \
+	$(DEBUG_MACRO) \
+	-Wall -Wextra -Werror \
+	-fdata-sections \
+	-ffunction-sections \
+	$(DEBUG_FLAG) $(OPTIMIZE_FLAG) \
+	-MMD -MP -MF$(TARGET_DEP_DIR)/$*.d
+
+LDFLAGS = -lc -lm -lnosys -L$(MODULE_DIR)/libopencm3/lib -lopencm3_stm32f1 \
+	--static \
+	-nostartfiles \
+	-specs=nano.specs \
+	-L$(MODULE_DIR)/libopencm3/lib -T$(LDSCRIPT) \
+	$(ARCH_FLAGS) $(DEBUG_FLAG) \
+	-Wl,-Map=$(TARGET_MAP),--cref \
+	-Wl,--gc-sections \
+	-Wl,--print-memory-usage
+
+# ---------------------------------------------------------
 # Rules ("Ordular, ilk hedefiniz Akdeniz'dir, ileri!")
 # ---------------------------------------------------------
 
@@ -126,9 +124,13 @@ _dirs:
 	$(Q) mkdir -p $(TARGET_OBJ_DIR)
 	$(Q) mkdir -p $(TARGET_DEP_DIR)
 
-$(TARGET_OBJ_DIR)/%.o: %.c _dirs
+$(TARGET_OBJ_DIR)/%.o: %.c
 	@echo "$(GREEN)[CC] Compiling\t$(notdir $<)$(NO_COLOR)"
 	$(Q) $(CC) $(CFLAGS) -c $< -o $@
+
+# %.o: %.c _dirs
+# 	@echo "  CC      $(subst $(shell pwd)/,,$(@))\n"
+# 	$(Q)$(CC) $(CFLAGS) -o $@ -c $<
 
 $(TARGET_OBJ_DIR)/%.o: %.s _dirs
 	@echo "$(GREEN)[AS] Assembling\t$(notdir $<)$(NO_COLOR)"
@@ -161,7 +163,7 @@ $(TARGET_LIST): $(TARGET_ELF)
 # ---------------------------------------------------------
 .DEFAULT_GOAL := help
 
-.PHONY: clean help flash-st debug-st flash-jlink debug-jlink debug-gdb
+.PHONY: clean help flash-st debug-st debug-gdb
 
 clean:
 	@echo "$(BOLD)[CLEAN] clean objects and binaries$(NO_COLOR)"
@@ -203,3 +205,5 @@ debug-gdb:
 doxygen:
 	$(Q) mkdir -p $(TARGET_DOC_DIR)
 	$(Q) doxygen doc/Doxyfile
+
+-include $(DEPS)
