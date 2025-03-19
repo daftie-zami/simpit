@@ -128,10 +128,6 @@ $(TARGET_OBJ_DIR)/%.o: %.c
 	@echo "$(GREEN)[CC] Compiling\t$(notdir $<)$(NO_COLOR)"
 	$(Q) $(CC) $(CFLAGS) -c $< -o $@
 
-# %.o: %.c _dirs
-# 	@echo "  CC      $(subst $(shell pwd)/,,$(@))\n"
-# 	$(Q)$(CC) $(CFLAGS) -o $@ -c $<
-
 $(TARGET_OBJ_DIR)/%.o: %.s _dirs
 	@echo "$(GREEN)[AS] Assembling\t$(notdir $<)$(NO_COLOR)"
 	$(Q) $(CC) $(ASFLAGS) -c $< -o $@
