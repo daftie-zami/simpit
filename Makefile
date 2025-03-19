@@ -58,7 +58,7 @@ include $(MAKE_DIR)/verbose.mk
 include $(MAKE_DIR)/sysdiag.mk
 
 # ---------------------------------------------------------
-# Sources, Includes, Linker
+# Sources, Includes and Libraries
 # ---------------------------------------------------------
 SRC = $(notdir($(shell find $(SRC_DIR) -name '*.c'))# Find all (.c) source files
 
