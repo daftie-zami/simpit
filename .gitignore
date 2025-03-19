@@ -1,6 +1,7 @@
 build
 .vscode
 *.o
+*.a
 *.d
 *.asm
 *.hex
