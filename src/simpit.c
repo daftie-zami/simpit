@@ -10,11 +10,11 @@ int main(void) {
     systick_init();
     led_init();
     hid_init();
-
+    i2c_setup();
+    i2c_send_data(i2c, 0x2)
 	for (;;) {
         LED_TOGGLE();
         hid_run();
-        // delay(50);
 	}
     return 0;
 }

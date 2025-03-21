@@ -34,101 +34,102 @@ const struct usb_device_descriptor dev_descr = {
 .bNumConfigurations = 1,
 };
 
-static const uint8_t hid_report_descriptor[] = {
-    0x05, 0x01,        // Usage Page (Generic Desktop)
-    0x09, 0x04,        // Usage (Joystick)
-    0xA1, 0x01,        // Collection (Application)
-
-    // **Motor Pos (OUT - PC -> MCU)**
-    0x09, 0x32,        // Usage (Z Axis - Motor Position)
-    0x16, 0x00, 0x80,  // Logical Minimum (-32768)
-    0x26, 0xFF, 0x7F,  // Logical Maximum (32767)
-    0x75, 0x10,        // Report Size (16 bits)
-    0x95, 0x01,        // Report Count (1)
-    0x91, 0x02,        // Output (Data, Variable, Absolute)
-
-    // **PID Coeff (OUT - PC -> MCU)**
-    0x09, 0x40,        // Usage (PID P Gain)
-    0x16, 0x00, 0x80,  // Logical Minimum (-32768)
-    0x26, 0xFF, 0x7F,  // Logical Maximum (32767)
-    0x75, 0x10,        // Report Size (16 bits)
-    0x95, 0x01,        // Report Count (1)
-    0x91, 0x02,        // Output (Data, Variable, Absolute)
-
-    0x09, 0x41,        // Usage (PID I Gain)
-    0x91, 0x02,        // Output (Data, Variable, Absolute)
-
-    0x09, 0x42,        // Usage (PID D Gain)
-    0x91, 0x02,        // Output (Data, Variable, Absolute)
-
-    // **Motor Speed (IN - MCU -> PC)**
-    0x09, 0x34,        // Usage (RX Axis - Motor Speed)
-    0x15, 0x00,        // Logical Minimum (0)
-    0x25, 0xFF,        // Logical Maximum (255)
-    0x75, 0x08,        // Report Size (8 bits)
-    0x95, 0x01,        // Report Count (1)
-    0x81, 0x02,        // Input (Data, Variable, Absolute)
-
-    // **Motor Dir (IN - MCU -> PC)**
-    0x09, 0x35,        // Usage (RY Axis - Motor Direction)
-    0x15, 0x00,        // Logical Minimum (0)
-    0x25, 0x01,        // Logical Maximum (1)
-    0x75, 0x01,        // Report Size (1 bit)
-    0x95, 0x01,        // Report Count (1)
-    0x81, 0x02,        // Input (Data, Variable, Absolute)
-
-    // **Motor Temp (IN - MCU -> PC)**
-    0x09, 0x36,        // Usage (Throttle - Motor Temperature)
-    0x16, 0x00, 0x00,  // Logical Minimum (0)
-    0x26, 0xFF, 0x7F,  // Logical Maximum (32767)
-    0x75, 0x10,        // Report Size (16 bits)
-    0x95, 0x01,        // Report Count (1)
-    0x81, 0x02,        // Input (Data, Variable, Absolute)
-
-    0xC0               // End Collection
-};
-
 
 // static const uint8_t hid_report_descriptor[] = {
-//     0x05, 0x01, /* USAGE_PAGE (Generic Desktop)         */
-//     0x09, 0x02, /* USAGE (Mouse)                        */
-//     0xa1, 0x01, /* COLLECTION (Application)             */
-//     0x09, 0x01, /*   USAGE (Pointer)                    */
-//     0xa1, 0x00, /*   COLLECTION (Physical)              */
-//     0x05, 0x09, /*     USAGE_PAGE (Button)              */
-//     0x19, 0x01, /*     USAGE_MINIMUM (Button 1)         */
-//     0x29, 0x03, /*     USAGE_MAXIMUM (Button 3)         */
-//     0x15, 0x00, /*     LOGICAL_MINIMUM (0)              */
-//     0x25, 0x01, /*     LOGICAL_MAXIMUM (1)              */
-//     0x95, 0x03, /*     REPORT_COUNT (3)                 */
-//     0x75, 0x01, /*     REPORT_SIZE (1)                  */
-//     0x81, 0x02, /*     INPUT (Data,Var,Abs)             */
-//     0x95, 0x01, /*     REPORT_COUNT (1)                 */
-//     0x75, 0x05, /*     REPORT_SIZE (5)                  */
-//     0x81, 0x01, /*     INPUT (Cnst,Ary,Abs)             */
-//     0x05, 0x01, /*     USAGE_PAGE (Generic Desktop)     */
-//     0x09, 0x30, /*     USAGE (X)                        */
-//     0x09, 0x31, /*     USAGE (Y)                        */
-//     0x09, 0x38, /*     USAGE (Wheel)                    */
-//     0x15, 0x81, /*     LOGICAL_MINIMUM (-127)           */
-//     0x25, 0x7f, /*     LOGICAL_MAXIMUM (127)            */
-//     0x75, 0x08, /*     REPORT_SIZE (8)                  */
-//     0x95, 0x03, /*     REPORT_COUNT (3)                 */
-//     0x81, 0x06, /*     INPUT (Data,Var,Rel)             */
-//     0xc0,       /*   END_COLLECTION                     */
-//     0x09, 0x3c, /*   USAGE (Motion Wakeup)              */
-//     0x05, 0xff, /*   USAGE_PAGE (Vendor Defined Page 1) */
-//     0x09, 0x01, /*   USAGE (Vendor Usage 1)             */
-//     0x15, 0x00, /*   LOGICAL_MINIMUM (0)                */
-//     0x25, 0x01, /*   LOGICAL_MAXIMUM (1)                */
-//     0x75, 0x01, /*   REPORT_SIZE (1)                    */
-//     0x95, 0x02, /*   REPORT_COUNT (2)                   */
-//     0xb1, 0x22, /*   FEATURE (Data,Var,Abs,NPrf)        */
-//     0x75, 0x06, /*   REPORT_SIZE (6)                    */
-//     0x95, 0x01, /*   REPORT_COUNT (1)                   */
-//     0xb1, 0x01, /*   FEATURE (Cnst,Ary,Abs)             */
-//     0xc0        /* END_COLLECTION                       */
+//     0x05, 0x01,        // Usage Page (Generic Desktop)
+//     0x09, 0x04,        // Usage (Joystick)
+//     0xA1, 0x01,        // Collection (Application)
+
+//     // **Motor Pos (OUT - PC -> MCU)**
+//     0x09, 0x32,        // Usage (Z Axis - Motor Position)
+//     0x16, 0x00, 0x80,  // Logical Minimum (-32768)
+//     0x26, 0xFF, 0x7F,  // Logical Maximum (32767)
+//     0x75, 0x10,        // Report Size (16 bits)
+//     0x95, 0x01,        // Report Count (1)
+//     0x91, 0x02,        // Output (Data, Variable, Absolute)
+
+//     // **PID Coeff (OUT - PC -> MCU)**
+//     0x09, 0x40,        // Usage (PID P Gain)
+//     0x16, 0x00, 0x80,  // Logical Minimum (-32768)
+//     0x26, 0xFF, 0x7F,  // Logical Maximum (32767)
+//     0x75, 0x10,        // Report Size (16 bits)
+//     0x95, 0x01,        // Report Count (1)
+//     0x91, 0x02,        // Output (Data, Variable, Absolute)
+
+//     0x09, 0x41,        // Usage (PID I Gain)
+//     0x91, 0x02,        // Output (Data, Variable, Absolute)
+
+//     0x09, 0x42,        // Usage (PID D Gain)
+//     0x91, 0x02,        // Output (Data, Variable, Absolute)
+
+//     // **Motor Speed (IN - MCU -> PC)**
+//     0x09, 0x34,        // Usage (RX Axis - Motor Speed)
+//     0x15, 0x00,        // Logical Minimum (0)
+//     0x25, 0xFF,        // Logical Maximum (255)
+//     0x75, 0x08,        // Report Size (8 bits)
+//     0x95, 0x01,        // Report Count (1)
+//     0x81, 0x02,        // Input (Data, Variable, Absolute)
+
+//     // **Motor Dir (IN - MCU -> PC)**
+//     0x09, 0x35,        // Usage (RY Axis - Motor Direction)
+//     0x15, 0x00,        // Logical Minimum (0)
+//     0x25, 0x01,        // Logical Maximum (1)
+//     0x75, 0x01,        // Report Size (1 bit)
+//     0x95, 0x01,        // Report Count (1)
+//     0x81, 0x02,        // Input (Data, Variable, Absolute)
+
+//     // **Motor Temp (IN - MCU -> PC)**
+//     0x09, 0x36,        // Usage (Throttle - Motor Temperature)
+//     0x16, 0x00, 0x00,  // Logical Minimum (0)
+//     0x26, 0xFF, 0x7F,  // Logical Maximum (32767)
+//     0x75, 0x10,        // Report Size (16 bits)
+//     0x95, 0x01,        // Report Count (1)
+//     0x81, 0x02,        // Input (Data, Variable, Absolute)
+
+//     0xC0               // End Collection
 // };
+
+
+static const uint8_t hid_report_descriptor[] = {
+    0x05, 0x01, /* USAGE_PAGE (Generic Desktop)         */
+    0x09, 0x02, /* USAGE (Mouse)                        */
+    0xa1, 0x01, /* COLLECTION (Application)             */
+    0x09, 0x01, /*   USAGE (Pointer)                    */
+    0xa1, 0x00, /*   COLLECTION (Physical)              */
+    0x05, 0x09, /*     USAGE_PAGE (Button)              */
+    0x19, 0x01, /*     USAGE_MINIMUM (Button 1)         */
+    0x29, 0x03, /*     USAGE_MAXIMUM (Button 3)         */
+    0x15, 0x00, /*     LOGICAL_MINIMUM (0)              */
+    0x25, 0x01, /*     LOGICAL_MAXIMUM (1)              */
+    0x95, 0x03, /*     REPORT_COUNT (3)                 */
+    0x75, 0x01, /*     REPORT_SIZE (1)                  */
+    0x81, 0x02, /*     INPUT (Data,Var,Abs)             */
+    0x95, 0x01, /*     REPORT_COUNT (1)                 */
+    0x75, 0x05, /*     REPORT_SIZE (5)                  */
+    0x81, 0x01, /*     INPUT (Cnst,Ary,Abs)             */
+    0x05, 0x01, /*     USAGE_PAGE (Generic Desktop)     */
+    0x09, 0x30, /*     USAGE (X)                        */
+    0x09, 0x31, /*     USAGE (Y)                        */
+    0x09, 0x38, /*     USAGE (Wheel)                    */
+    0x15, 0x81, /*     LOGICAL_MINIMUM (-127)           */
+    0x25, 0x7f, /*     LOGICAL_MAXIMUM (127)            */
+    0x75, 0x08, /*     REPORT_SIZE (8)                  */
+    0x95, 0x03, /*     REPORT_COUNT (3)                 */
+    0x81, 0x06, /*     INPUT (Data,Var,Rel)             */
+    0xc0,       /*   END_COLLECTION                     */
+    0x09, 0x3c, /*   USAGE (Motion Wakeup)              */
+    0x05, 0xff, /*   USAGE_PAGE (Vendor Defined Page 1) */
+    0x09, 0x01, /*   USAGE (Vendor Usage 1)             */
+    0x15, 0x00, /*   LOGICAL_MINIMUM (0)                */
+    0x25, 0x01, /*   LOGICAL_MAXIMUM (1)                */
+    0x75, 0x01, /*   REPORT_SIZE (1)                    */
+    0x95, 0x02, /*   REPORT_COUNT (2)                   */
+    0xb1, 0x22, /*   FEATURE (Data,Var,Abs,NPrf)        */
+    0x75, 0x06, /*   REPORT_SIZE (6)                    */
+    0x95, 0x01, /*   REPORT_COUNT (1)                   */
+    0xb1, 0x01, /*   FEATURE (Cnst,Ary,Abs)             */
+    0xc0        /* END_COLLECTION                       */
+};
 
 static const struct {
     struct usb_hid_descriptor hid_descriptor;
