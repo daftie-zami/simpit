@@ -1,5 +1,6 @@
 #include "systick.h"
 
+#include "led.h"
 #include <libopencm3/cm3/systick.h>
 #include <libopencm3/cm3/nvic.h>
 
@@ -25,16 +26,16 @@ uint32_t systick_get_ms(void){
   return systick_delay;
 }
 
-void delay(uint32_t ms)
-{
-  systick_delay = ms;
-  while (systick_delay != 0);
+void delay(uint32_t ms){
+  uint32_t tickstart = systick_delay;
+  while ((systick_delay - tickstart) < ms);
 }
 
-void sys_tick_handler(void)
-{
-  if (systick_delay != 0)
-  {
-    systick_delay--;
-  }
+void sys_tick_handler(void){
+    systick_delay++;
+    static volatile uint32_t led_tick = 50;
+    if((--led_tick) == 0){
+      LED_TOGGLE();
+      led_tick = 50;
+    }
 }

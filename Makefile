@@ -30,7 +30,8 @@ SRC = hid.c \
 	led.c \
 	systick.c \
 	simpit.c \
-	mpu6050.c
+	mpu6050.c \
+	console.c
 
 INC += $(MODULE_DIR)/libopencm3/include  \
 	$(shell find $(SRC_DIR) -type d)

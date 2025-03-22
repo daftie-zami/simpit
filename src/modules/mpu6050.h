@@ -1,5 +1,8 @@
+#pragma once
 #include "board.h"
 
+#include <stdint.h>
 
 
-void i2c_setup(void);
+void mpu_init(void);
+void mpu_read(void);
