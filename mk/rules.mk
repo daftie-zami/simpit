@@ -1,6 +1,16 @@
 # ---------------------------------------------------------
 # Compiler, Architecture and linker flags
 # ---------------------------------------------------------
+ifeq ($(DEBUG), TRUE)
+	DEBUG_FLAG = -g3
+	OPTIMIZE_FLAG = -Og
+	DEBUG_MACRO = -DDEBUG
+else
+	DEBUG_FLAG = -g0
+	OPTIMIZE_FLAG = -O3
+	DEBUG_MACRO = -DNDEBUG
+endif
+
 ARCH_FLAGS := -mthumb -mcpu=cortex-m3 -msoft-float
 
 CFLAGS = $(ARCH_FLAGS) \
@@ -15,6 +25,7 @@ CFLAGS = $(ARCH_FLAGS) \
 	$(DEBUG_FLAG) $(OPTIMIZE_FLAG) \
 	-MMD -MP -MF$(TARGET_DEP_DIR)/$*.d
 
+LDSCRIPT = $(SRC_DIR)/board/stm32_f103.ld
 LDFLAGS = -lc -lm -lnosys -L$(MODULE_DIR)/libopencm3/lib -lopencm3_stm32f1 \
 	--static \
 	-nostartfiles \
@@ -26,8 +37,21 @@ LDFLAGS = -lc -lm -lnosys -L$(MODULE_DIR)/libopencm3/lib -lopencm3_stm32f1 \
 	-Wl,--print-memory-usage
 
 # ---------------------------------------------------------
+# Things we will build
+# ---------------------------------------------------------
+
+TARGET_ELF := $(BUILD_DIR)/$(PROJECT).elf
+TARGET_BIN := $(BUILD_DIR)/$(PROJECT).bin
+TARGET_HEX := $(BUILD_DIR)/$(PROJECT).hex
+TARGET_MAP := $(BUILD_DIR)/$(PROJECT).map
+TARGET_LSS := $(BUILD_DIR)/$(PROJECT).lss
+TARGET_LIST := $(BUILD_DIR)/$(PROJECT).list
+
+# ---------------------------------------------------------
 # Rules ("Ordular, ilk hedefiniz Akdeniz'dir, ileri!")
 # ---------------------------------------------------------
+
+.PHONY: all _dirs clean flash-st debug-st debug-gdb
 
 all: $(TARGET_BIN) $(TARGET_HEX) $(TARGET_LSS) $(TARGET_LIST)
 
@@ -35,7 +59,7 @@ _dirs:
 	$(Q) mkdir -p $(TARGET_OBJ_DIR)
 	$(Q) mkdir -p $(TARGET_DEP_DIR)
 
-$(TARGET_OBJ_DIR)/%.o: %.c
+$(TARGET_OBJ_DIR)/%.o: %.c _dirs
 	@echo "$(GREEN)[CC] Compiling\t$(notdir $<)$(NO_COLOR)"
 	$(Q) $(CC) $(CFLAGS) -c $< -o $@
 
@@ -65,8 +89,6 @@ $(TARGET_LIST): $(TARGET_ELF)
 	@echo "$(MAGENTA)[OBJDUMP] Creating list\t$(notdir $@)$(NO_COLOR)"
 	$(Q) $(OBJDUMP) -S $< > $@
 
-# ---------------------------------------------------------
-
 clean:
 	@echo "$(BOLD)[CLEAN] clean objects and binaries$(NO_COLOR)"
 	$(Q)rm -rf $(TARGET_OBJS) $(TARGET_DEPS) $(TARGET_ELF) $(TARGET_BIN) $(TARGET_HEX) $(TARGET_MAP) $(TARGET_LSS) $(TARGET_LIST)
@@ -90,6 +112,6 @@ debug-gdb:
 			-ex "layout split" \
 			$(TARGET_ELF)
 
-.PHONY: all _dirs clean flash-st debug-st debug-gdb
+-include $(TARGET_DEPS)
 
 # ---------------------------------------------------------
