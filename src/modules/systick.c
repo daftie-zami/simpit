@@ -35,7 +35,7 @@ void sys_tick_handler(void){
     systick_delay++;
     static volatile uint32_t led_tick = 50;
     if((--led_tick) == 0){
-      LED_TOGGLE();
+      // LED_TOGGLE();
       led_tick = 50;
     }
 }

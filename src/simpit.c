@@ -15,6 +15,7 @@ int main(void) {
 
 	for (;;) {
         // hid_run();
+        LED_TOGGLE();
         delay(50);
         mpu_read();
 	}
