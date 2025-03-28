@@ -75,7 +75,7 @@ static void i2c_setup(void) {
 
     // Ensure SCL and SDA are High
     while (!(gpio_get(GPIOB, GPIO_I2C2_SCL) && gpio_get(GPIOB, GPIO_I2C2_SDA)));
-
+ 
     // Pull SDA Low
     gpio_clear(GPIOB, GPIO_I2C2_SDA);
     while (gpio_get(GPIOB, GPIO_I2C2_SDA));
