@@ -1,0 +1,5 @@
+C:/Users/mahmut.sami.ozmen/Desktop/simpit_cmake/CMakeFiles/simpit_cmake.dir
+C:/Users/mahmut.sami.ozmen/Desktop/simpit_cmake/CMakeFiles/edit_cache.dir
+C:/Users/mahmut.sami.ozmen/Desktop/simpit_cmake/CMakeFiles/rebuild_cache.dir
+C:/Users/mahmut.sami.ozmen/Desktop/simpit_cmake/cmake/stm32cubemx/CMakeFiles/edit_cache.dir
+C:/Users/mahmut.sami.ozmen/Desktop/simpit_cmake/cmake/stm32cubemx/CMakeFiles/rebuild_cache.dir
