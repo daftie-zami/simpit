@@ -56,61 +56,31 @@ void mpu_read(void){
 }
 
 static void i2c_setup(void) {
+    // rcc_periph_reset_pulse(I2C2);
 	// Errata
-    // Enable clocks for I2C2 and AFIO
-    rcc_periph_clock_enable(RCC_I2C2);
-    rcc_periph_clock_enable(RCC_AFIO);
+    gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_OPENDRAIN, GPIO_I2C2_SCL | GPIO_I2C2_SDA);
 
-    // Reset the I2C peripheral
+    // Reset I2C peripheral
     I2C_CR1(I2C2) |= I2C_CR1_SWRST;
     I2C_CR1(I2C2) &= ~I2C_CR1_SWRST;
 
     // Disable the I2C peripheral
     i2c_peripheral_disable(I2C2);
 
-    // Apply workaround for I2C BUSY flag issue
-    // Configure SCL and SDA as General Purpose Output Open-Drain, High level
-    gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_OPENDRAIN, GPIO_I2C2_SCL | GPIO_I2C2_SDA);
-    gpio_set(GPIOB, GPIO_I2C2_SCL | GPIO_I2C2_SDA);
-
-    // Ensure SCL and SDA are High
-    while (!(gpio_get(GPIOB, GPIO_I2C2_SCL) && gpio_get(GPIOB, GPIO_I2C2_SDA)));
- 
-    // Pull SDA Low
-    gpio_clear(GPIOB, GPIO_I2C2_SDA);
-    while (gpio_get(GPIOB, GPIO_I2C2_SDA));
-
-    // Pull SCL Low
-    gpio_clear(GPIOB, GPIO_I2C2_SCL);
-    while (gpio_get(GPIOB, GPIO_I2C2_SCL));
-
-    // Release SCL High
-    gpio_set(GPIOB, GPIO_I2C2_SCL);
-    while (!gpio_get(GPIOB, GPIO_I2C2_SCL));
-
-    // Release SDA High
-    gpio_set(GPIOB, GPIO_I2C2_SDA);
-    while (!gpio_get(GPIOB, GPIO_I2C2_SDA));
-
-    // Configure SCL and SDA back to Alternate function Open-Drain
-    gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_OPENDRAIN, GPIO_I2C2_SCL | GPIO_I2C2_SDA);
-
-    // Reset I2C peripheral again
-    I2C_CR1(I2C2) |= I2C_CR1_SWRST;
-    I2C_CR1(I2C2) &= ~I2C_CR1_SWRST;
-
     // Set clock frequency for I2C (APB1 is running at 36MHz)
-    i2c_set_clock_frequency(I2C2, 36);
-
+    // i2c_set_clock_frequency(I2C2, 36);
+    
     // Set I2C Fast Mode (400KHz)
-    i2c_set_fast_mode(I2C2);
+    // i2c_set_fast_mode(I2C2);
+
+    i2c_set_speed(I2C2,i2c_speed_fm_400k,36);
 
     // Set CCR and TRISE values
-    i2c_set_ccr(I2C2, 0x1e);
-    i2c_set_trise(I2C2, 0x0b);
+    // i2c_set_ccr(I2C2, 30);
+    // i2c_set_trise(I2C2, 12);
 
     // Set own 7-bit slave address
-    i2c_set_own_7bit_slave_address(I2C2, 0x32);
+    // i2c_set_own_7bit_slave_address(I2C2, 0);
 
     // Enable the I2C peripheral
     i2c_peripheral_enable(I2C2);

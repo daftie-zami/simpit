@@ -313,7 +313,6 @@ static void hid_set_config(usbd_device *dev, uint16_t wValue)
 }
 
 void hid_init(void){
-    rcc_periph_clock_enable(RCC_GPIOA);
     /*
     * This is a somewhat common cheap hack to trigger device re-enumeration
     * on startup.  Assuming a fixed external pullup on D+, (For USB-FS)

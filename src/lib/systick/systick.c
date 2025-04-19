@@ -1,6 +1,6 @@
 #include "systick.h"
 
-#include "led.h"
+#include <lib/led/led.h>
 #include <libopencm3/cm3/systick.h>
 #include <libopencm3/cm3/nvic.h>
 

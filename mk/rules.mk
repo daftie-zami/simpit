@@ -93,22 +93,12 @@ clean:
 	@echo "$(BOLD)[CLEAN] clean objects and binaries$(NO_COLOR)"
 	$(Q)rm -rf $(TARGET_OBJS) $(TARGET_DEPS) $(TARGET_ELF) $(TARGET_BIN) $(TARGET_HEX) $(TARGET_MAP) $(TARGET_LSS) $(TARGET_LIST)
 
-flash-stlink: all
+flash-st: all
 	@echo "$(WARNING) This command requires sudo privileges!$(NO_COLOR)"
 	@echo "$(CYAN)[FLASH] Flashing target via STLink$(NO_COLOR)"
 	$(Q) sudo openocd -f interface/stlink.cfg -f target/stm32f1x.cfg -c "program $(TARGET_BIN) 0x08000000 reset exit"
 
-debug-stlink: flash-st
-	@echo "$(WARNING) This command requires sudo privileges!$(NO_COLOR)"
-	@echo "$(CYAN)[DEBUG] Starting GDB server via STLink$(NO_COLOR)"
-	$(Q) sudo openocd -f interface/stlink.cfg -f target/stm32f1x.cfg
-
-flash-wchlink: all
-	@echo "$(WARNING) This command requires sudo privileges!$(NO_COLOR)"
-	@echo "$(CYAN)[FLASH] Flashing target via STLink$(NO_COLOR)"
-	$(Q) sudo openocd -f interface/stlink.cfg -f target/stm32f1x.cfg -c "program $(TARGET_BIN) 0x08000000 reset exit"
-
-debug-wchlink: flash-wchlink
+debug-st: flash-st
 	@echo "$(WARNING) This command requires sudo privileges!$(NO_COLOR)"
 	@echo "$(CYAN)[DEBUG] Starting GDB server via STLink$(NO_COLOR)"
 	$(Q) sudo openocd -f interface/stlink.cfg -f target/stm32f1x.cfg
@@ -122,6 +112,6 @@ debug-gdb:
 			-ex "layout split" \
 			$(TARGET_ELF)
 
--include $(TARGET_DEPS)
+# -include $(TARGET_DEPS)
 
 # ---------------------------------------------------------
