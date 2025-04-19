@@ -10,16 +10,17 @@ int main(void) {
     clock_setup();
 
     //Modules
-    led_init(); //First LED
-    systick_init();
+    led_init();
     hid_init();
-    mpu_init();
+    systick_init();
+    // mpu_init();
 
+    delay(50);
 	for (;;) {
-        // hid_run();
+        // hid_test();
         LED_TOGGLE();
         delay(50);
-        mpu_read();
+        // mpu_read();
 	}
     return 0;
 }
@@ -27,9 +28,10 @@ int main(void) {
 
 static void clock_setup(void) {
     rcc_clock_setup_pll(&rcc_hse_configs[RCC_CLOCK_HSE8_72MHZ]); // set system clock to 72MHz using 8MHz HSE
-    rcc_periph_clock_enable(RCC_GPIOB);
 
     rcc_periph_clock_enable(RCC_GPIOA);
+    rcc_periph_clock_enable(RCC_GPIOB);
+    rcc_periph_clock_enable(RCC_GPIOC);
 
     rcc_periph_clock_enable(RCC_I2C2);
     rcc_periph_clock_enable(RCC_AFIO);

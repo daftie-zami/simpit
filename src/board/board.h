@@ -2,9 +2,9 @@
 
 #define SYSTICK_FREQUENCY 1000 // 1ms
 
-#define LED_RCC_CLK         RCC_GPIOB
-#define LED_PIN             GPIO2
-#define LED_PORT            GPIOB
+#define LED_RCC_CLK         RCC_GPIOC
+#define LED_PIN             GPIO13
+#define LED_PORT            GPIOC
 
 #define I2C_PORT            I2C1
 #define I2C_GPIO_PORT       GPIOB

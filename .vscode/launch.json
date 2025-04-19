@@ -8,7 +8,7 @@
             "request": "launch",
             "servertype": "openocd",
             "cwd": "${workspaceRoot}",
-            "executable": "${workspaceRoot}/build/bin/firmware.elf",
+            "executable": "${workspaceRoot}/build/bin/simpit.elf",
             "configFiles": [
                 "${workspaceRoot}/build/tools/openocd.cfg"
             ],

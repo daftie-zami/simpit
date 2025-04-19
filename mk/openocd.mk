@@ -19,6 +19,11 @@ debug-attach:
 	@$(Q)openocd -f $(OPENOCD_CFG) -c "init; halt"
 	@echo "$(GREEN)[DEBUG] OpenOCD attached!$(NO_COLOR)"
 
+flash: $(OPENOCD_CFG) $(PROJECT)
+	@echo "$(YELLOW)[OPENOCD] Flashing $(ELF)$(NO_COLOR)"
+	@$(Q)openocd -f $(OPENOCD_CFG) -c "program $(ELF) verify reset exit"
+	@echo "$(GREEN)[OPENOCD] Flashing done!$(NO_COLOR)"
+
 debug-gdb:
 	$(Q) $(GDB) \
 			-ex "target extended-remote :3333" \
@@ -27,11 +32,6 @@ debug-gdb:
 			-ex "continue" \
 			-ex "layout split" \
 			$(ELF)
-
-flash: $(OPENOCD_CFG) $(PROJECT)
-	@echo "$(YELLOW)[OPENOCD] Flashing $(ELF)$(NO_COLOR)"
-	@$(Q)openocd -f $(OPENOCD_CFG) -c "program $(ELF) verify reset exit"
-	@echo "$(GREEN)[OPENOCD] Flashing done!$(NO_COLOR)"
 
 ocd-view-log:
 	@tail -n 50 $(OPENOCD_LOG)

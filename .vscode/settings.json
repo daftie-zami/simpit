@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "led.h": "c",
+        "board.h": "c",
+        "rcc.h": "c",
+        "hid.h": "c",
+        "mpu6050.h": "c",
+        "systick.h": "c",
+        "random": "c"
+    }
+}

@@ -7,7 +7,7 @@ ifeq ($(DEBUG), TRUE)
     DEBUG_MACRO = -D__DEBUG__
 else
     DEBUG_FLAG = -g0
-    OPTIMIZE_FLAG = -O1
+    OPTIMIZE_FLAG = -O0
     DEBUG_MACRO = -D__NDEBUG__
 endif
 
