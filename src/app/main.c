@@ -1,8 +1,8 @@
 #include "my_assert.h"
-#include <lib/led/led.h>
-#include <lib/systick/systick.h>
-#include <lib/hid/hid.h>
-#include <lib/mpu6050/mpu6050.h>
+#include <led/led.h>
+#include <systick/systick.h>
+#include <hid/hid.h>
+#include <mpu6050/mpu6050.h>
 
 static void clock_setup(void);
 

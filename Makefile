@@ -22,7 +22,7 @@ LIBOPENCM3 := -lopencm3_stm32f1
 C_SRC = $(shell find -L $(SRC_DIR) -name '*.c')
 
 # Include directories
-INC_DIR = $(SRC_DIR) $(MODULE_DIR)/libopencm3/include $(SRC_DIR)/lib $(SRC_DIR)/board
+INC_DIR = $(shell find $(SRC_DIR) -type d) $(MODULE_DIR)/libopencm3/include
 
 include $(MK_DIR)/verbosity.mk
 
@@ -31,7 +31,6 @@ all: $(PROJECT)
 clean : 
 	@echo "$(RED)[CLEAN] Cleaning up...$(NO_COLOR)"
 	@rm -rf $(BUILD_DIR)
-	@echo "$(GREEN)[CLEAN] Done!$(NO_COLOR)"
 
 test: 
 	@echo "Running tests..."

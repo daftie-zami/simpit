@@ -1,0 +1,24 @@
+{
+    // TODO
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug with OpenOCD",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/build/bin/firmware.elf",
+            "configFiles": [
+                "${workspaceRoot}/build/tools/openocd.cfg"
+            ],
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "vscode",
+            // "svdFile": "${workspaceRoot}/path/to/your_device.svd",
+            "postLaunchCommands": [
+                "break main",
+                "continue"
+            ]
+        }
+    ]
+}

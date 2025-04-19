@@ -1,5 +1,4 @@
 build
-.vscode
 *.o
 *.a
 *.d
@@ -10,3 +9,6 @@ build
 *.map
 *.out
 *.Identifier
+
+openocd.cfg
+openocd.log
