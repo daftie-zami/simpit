@@ -1,69 +1,56 @@
-# ---------------------------------------------------------
-# Project
-# ---------------------------------------------------------
-# make debug-st DEBUG=TRUE
-
 PROJECT ?= simpit
 
-V ?= 1
+PLATFORM ?= STM32F1
 
 DEBUG ?= FALSE
 
-# ---------------------------------------------------------
-# Folder structure
-# ---------------------------------------------------------
+DEBUG_PROBE ?= STLINK
 
-BUILD_DIR	 := build
-DOC_DIR      := doc
-MODULE_DIR   := modules
-SRC_DIR      := src
-TEST_DIR	 := test
-MAKE_DIR	 := mk
+V ?= 1
 
-include $(MAKE_DIR)/arm-none-eabi.mk
-include $(MAKE_DIR)/utils.mk
-include $(MAKE_DIR)/verbose.mk
-include $(MAKE_DIR)/sysdiag.mk
+BUILD_DIR  := build
+MK_DIR     := mk
+MODULE_DIR := modules
+SRC_DIR    := src
+TEST_DIR   := test
+TOOLS_DIR  := tools
 
-SRC = $(SRC_DIR)/lib/hid/hid.c \
-	$(SRC_DIR)/lib/led/led.c \
-	$(SRC_DIR)/lib/systick/systick.c \
-	$(SRC_DIR)/lib/mpu6050/mpu6050.c \
-	$(SRC_DIR)/lib/console/console.c \
-	$(SRC_DIR)/app/simpit.c
+LDSCRIPT := $(SRC_DIR)/board/stm32_f103.ld
+LIBOPENCM3 := -lopencm3_stm32f1
 
-INC += $(MODULE_DIR)/libopencm3/include  \
-	$(SRC_DIR) $(SRC_DIR)/board $(SRC_DIR)/common
+# Source files
+C_SRC = $(shell find -L $(SRC_DIR) -name '*.c')
 
-VPATH += $(INC)
+# Include directories
+INC_DIR = $(SRC_DIR) $(MODULE_DIR)/libopencm3/include $(SRC_DIR)/lib $(SRC_DIR)/board
 
-TARGET_OBJ_DIR := $(BUILD_DIR)/objs
-TARGET_DEP_DIR := $(BUILD_DIR)/deps
-TARGET_OBJS  = $(addprefix $(TARGET_OBJ_DIR)/, $(SRC:.c=.o))
-TARGET_DEPS  = $(addprefix $(TARGET_DEP_DIR)/, $(SRC:.c=.d))
+include $(MK_DIR)/verbosity.mk
 
-TARGET_OBJ := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(C_SRC))
-TARGET_DEP := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.d,$(C_SRC))
+all: $(PROJECT)
 
-include $(MAKE_DIR)/rules.mk
+clean : 
+	@echo "$(RED)[CLEAN] Cleaning up...$(NO_COLOR)"
+	@rm -rf $(BUILD_DIR)
+	@echo "$(GREEN)[CLEAN] Done!$(NO_COLOR)"
 
-# ---------------------------------------------------------
-# Rules
-# ---------------------------------------------------------
-.DEFAULT_GOAL := help
+test: 
+	@echo "Running tests..."
+	$(Q)$(MAKE) -C $(TEST_DIR) test
 
-.PHONY: help doxygen
+include $(MK_DIR)/utils.mk
+include $(MK_DIR)/doxygen.mk
+include $(MK_DIR)/flags.mk
+include $(MK_DIR)/openocd.mk
+include $(MK_DIR)/rules.mk
+include $(MK_DIR)/sysdiag.mk
+include $(MK_DIR)/toolchain.mk
 
 help:
+	@echo "Makefile for $(PROJECT)"
+	@echo "Usage: make [target]"
 	@echo ""
-	@echo "\t\tSimPit"
-	@echo ""
-	@echo "------------------------------ [Usage] ------------------------------"
-	@echo "make help\tShow this help message"
-	@echo "---------------------------------------------------------------------"
+	@echo "Targets:"
+	@echo "$(PROJECT) --- Build the project"
 
-# FIXME Doxygen
-doxygen:
-	$(Q) mkdir -p build/doc
-	$(Q) doxygen doc/Doxyfile
-
+.DEFAULT_GOAL := help
+.PHONY: all clean help test

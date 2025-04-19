@@ -1,6 +1,6 @@
 #pragma once
 
-#include "board.h"
+#include <board.h>
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 
