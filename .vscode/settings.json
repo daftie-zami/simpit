@@ -6,6 +6,19 @@
         "hid.h": "c",
         "mpu6050.h": "c",
         "systick.h": "c",
-        "random": "c"
+        "common.h": "c",
+        "vector.h": "c",
+        "array": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "ranges": "c",
+        "span": "c",
+        "utility": "c",
+        "string": "c",
+        "console.h": "c",
+        "stdarg.h": "c",
+        "usart.h": "c",
+        "stdio.h": "c",
+        "stdlib.h": "c"
     }
 }

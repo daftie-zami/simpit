@@ -10,13 +10,11 @@ DEP := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.d,$(C_SRC))
 
 $(PROJECT): $(BIN) $(HEX) $(LIST) $(LSS)
 
-# TODO Test this
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@echo "$(GREEN)[CC] Compiling\t$(notdir $<)$(NO_COLOR)"
 	@mkdir -p $(dir $@)
 	$(Q)$(CC) $(CFLAGS) -o $@ -c $<
 
-#TODO add cxx and s compiler rules
 $(ELF): $(OBJ)
 	@mkdir -p $(dir $@)
 	@echo "$(YELLOW)[LD] Linking\t$@$(NO_COLOR)"

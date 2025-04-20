@@ -11,7 +11,7 @@ DEBUG ?= FALSE
 
 DEBUG_PROBE ?= STLINK
 
-V ?= 1
+V ?= 0
 
 BUILD_DIR  := build
 MK_DIR     := mk

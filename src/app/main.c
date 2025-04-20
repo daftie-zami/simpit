@@ -1,10 +1,13 @@
-#include "my_assert.h"
+#include <board.h>
 #include <led/led.h>
 #include <systick/systick.h>
 #include <hid/hid.h>
 #include <mpu6050/mpu6050.h>
+#include <console/console.h>
 
 static void clock_setup(void);
+
+extern void console_usart_write(uint8_t *buf, uint16_t len);
 
 int main(void) {
     clock_setup();
@@ -13,14 +16,14 @@ int main(void) {
     led_init();
     hid_init();
     systick_init();
+    console_init();
+    LED_RESET();
     // mpu_init();
-
-    delay(50);
+    delay(10);
 	for (;;) {
-        // hid_test();
-        LED_TOGGLE();
+        // console_print("System clock: %d\n", rcc_ahb_frequency);
+        // LED_TOGGLE();
         delay(50);
-        // mpu_read();
 	}
     return 0;
 }
@@ -32,6 +35,8 @@ static void clock_setup(void) {
     rcc_periph_clock_enable(RCC_GPIOA);
     rcc_periph_clock_enable(RCC_GPIOB);
     rcc_periph_clock_enable(RCC_GPIOC);
+
+    rcc_periph_clock_enable(CONSOLE_USART_DMA_RCC_CLK);
 
     rcc_periph_clock_enable(RCC_I2C2);
     rcc_periph_clock_enable(RCC_AFIO);

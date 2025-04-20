@@ -14,7 +14,7 @@ void systick_init(void)
   /*
     * Set SysTick to count at 1ms intervals.
     * SysTick clock = AHB_clock / 8
-    * Reload value = (AHB_clock / 8) / 1000 - 1
+    * Reload value = (AHB_clock / 8) / (SYSTICK_FREQUENCY)1000 - 1
     */
   systick_set_clocksource(STK_CSR_CLKSOURCE_AHB_DIV8);
   systick_set_reload(rcc_ahb_frequency / 8 / SYSTICK_FREQUENCY - 1);
