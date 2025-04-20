@@ -22,6 +22,7 @@ int main(void) {
     delay(10);
 	for (;;) {
         // console_print("System clock: %d\n", rcc_ahb_frequency);
+        console_print("Counter: %d\n", systick_get_counter());
         // LED_TOGGLE();
         delay(50);
 	}

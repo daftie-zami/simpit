@@ -23,7 +23,7 @@ void systick_init(void)
   systick_counter_enable();
 }
 
-uint32_t systick_get_ms(void){
+uint32_t systick_get_counter(void){
   return systick_delay;
 }
 

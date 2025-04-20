@@ -21,12 +21,8 @@ static void dma_read(uint8_t *data, uint16_t size);
 
 void console_init(void){
     console_usart_init();
-	int *p = (void *)0x08000000;
-	console_usart_write((void *)p,1000);
-}
-
-void console_run(void){
-    
+	uint8_t *p = (void*)0x00000000;
+	console_usart_write(p,1000);
 }
 
 
