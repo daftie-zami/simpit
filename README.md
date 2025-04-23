@@ -1,7 +1,5 @@
 # SimPit
 
-This project is a **USB HID-based embedded system** developed for motor control in simulation cockpits. The system uses the HID protocol for communication between the microcontroller and the computer, sending motor speed, direction, and temperature data while receiving motor position and PID settings from the computer.
-
 ## HID Report Structure
 
 - **From Computer to Microcontroller (OUT Report)**
