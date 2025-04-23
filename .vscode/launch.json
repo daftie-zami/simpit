@@ -1,5 +1,4 @@
 {
-    // TODO
     "version": "0.2.0",
     "configurations": [
         {
@@ -13,12 +12,8 @@
             "servertype": "openocd",
             "gdbPath": "gdb-multiarch",
             "configFiles": [
-                "interface/stlink.cfg",
-                "target/stm32f1x.cfg"
+                "${workspaceFolder}/build/tools/openocd/openocd.cfg"
             ],
-            // "preLaunchCommands": [
-            //     "monitor program ${workspaceFolder}/simpit.elf verify reset"
-            // ],
             "preLaunchTask": "Debug",
             "internalConsoleOptions": "neverOpen",
         }

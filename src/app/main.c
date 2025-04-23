@@ -6,26 +6,22 @@
 #include <console/console.h>
 #include <console/console_usart.h>
 #include <string.h>
+#include <libopencm3/stm32/rcc.h>
 
 static void clock_setup(void);
 
-extern void console_usart_write(uint8_t *buf, uint16_t len);
-
 int main(void) {
+
     clock_setup();
 
     //Modules
     led_init();
-    // hid_init();
+    hid_init();
     systick_init();
     console_init();
 
 	for (;;) {
-        static char line_buf[64];
-        if (console_usart_read_line(line_buf, sizeof(line_buf))) {
-            console_usart_write((uint8_t *)"Gelen: ", 7);
-            console_usart_write((uint8_t *)line_buf, strlen(line_buf));
-        }
+        console_run();
         delay(50);
 	}
     return 0;

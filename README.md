@@ -1,5 +1,7 @@
 # SimPit
 
+TODO: add cppcheck, clang-formatter
+
 ## HID Report Structure
 
 - **From Computer to Microcontroller (OUT Report)**

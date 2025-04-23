@@ -28,5 +28,5 @@
         "console_usart.h": "c",
         "stddef.h": "c"
     },
-    "cortex-debug.variableUseNaturalFormat": false
+    "cortex-debug.variableUseNaturalFormat": true
 }

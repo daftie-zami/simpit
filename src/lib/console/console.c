@@ -1,5 +1,6 @@
 #include <console.h>
 #include <console_usart.h>
+#include <utils.h>
 
 #include <stdint.h>
 #include <string.h>
@@ -10,9 +11,12 @@
 static int command_count = 0;
 static console_cmd_t console_cmd[MAX_COMMANDS];
 
+static void console_help(int argc, char **argv);
+
 void console_init(void){
 	command_count = 0;
     console_usart_init();
+    console_register_command("help", "List available commands", console_help);
 }
 
 void console_register_command(const char *name, const char *help, command_func_t func) {
@@ -43,12 +47,14 @@ void console_process_input(const char *input_line) {
         }
     }
 
-    printf("Unknown command: %s\n", argv[0]);
+    console_print("Unknown command: %s\n", argv[0]);
 }
 
 void console_run(void) {
-    char line[128];
-    console_usart_read_line(line, sizeof(line));
+    static char line[128];
+    if (console_usart_read_line(line, sizeof(line))) {
+        console_process_input(line);
+    }
 }
 
 void console_print(const char *format, ...) {
@@ -59,4 +65,13 @@ void console_print(const char *format, ...) {
     va_end(argptr);
   
     console_usart_write((uint8_t*)buf, strlen(buf));
+}
+
+static void console_help(int argc, char **argv) {
+    UNUSED(argc);
+    UNUSED(argv);
+    console_print("Available commands:\n");
+    for (int i = 0; i < command_count; ++i) {
+        console_print("%s: %s\n", console_cmd[i].name, console_cmd[i].help);
+    }
 }
