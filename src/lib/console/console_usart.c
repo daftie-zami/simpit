@@ -1,5 +1,6 @@
 #include "console_usart.h"
 #include <board.h>
+#include <utils.h>
 #include <libopencm3/stm32/usart.h>
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
@@ -19,8 +20,8 @@ void console_usart_init(void){
     gpio_set_mode(CONSOLE_USART_GPIO_PORT, GPIO_MODE_OUTPUT_50_MHZ,
             GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, CONSOLE_USART_PIN_RX);
 
-    // /* Enable clocks for USART port */
-    rcc_periph_clock_enable(CONSOLE_USART_RCC_CLK);
+    // /* Enable clocks for USART1 port */
+    rcc_periph_clock_enable(RCC_USART1);
 
 	/* Setup USART parameters. */
 	usart_set_baudrate(CONSOLE_USART_PORT, CONSOLE_USART_BAUDRATE);
@@ -33,12 +34,17 @@ void console_usart_init(void){
 	/* Finally enable the USART. */
 	usart_enable(CONSOLE_USART_PORT);
 
-#ifdef CONSOLE_USART_USE_DMA
-    nvic_set_priority(CONSOLE_USART_TX_DMA_IRQ, 0);
-	nvic_enable_irq(CONSOLE_USART_TX_DMA_IRQ);
+	nvic_enable_irq(NVIC_USART1_IRQ);
 
-	nvic_set_priority(CONSOLE_USART_RX_DMA_IRQ, 0);
-	nvic_enable_irq(CONSOLE_USART_RX_DMA_IRQ);
+#ifdef CONSOLE_USART_USE_DMA
+	/* Enable clocks for DMA1 */
+	rcc_periph_clock_enable(RCC_DMA1);
+
+    nvic_set_priority(NVIC_DMA1_CHANNEL4_IRQ, 0);
+	nvic_enable_irq(NVIC_DMA1_CHANNEL4_IRQ);
+
+	nvic_set_priority(NVIC_DMA1_CHANNEL5_IRQ, 0);
+	nvic_enable_irq(NVIC_DMA1_CHANNEL5_IRQ);
 #endif
 }
 
@@ -61,71 +67,77 @@ void console_usart_read(uint8_t *buf, uint16_t len){
     }
 #endif
 }
+//TODO: implement this function
+void console_usart_read_line(uint8_t *buf, uint16_t len){
+	UNUSED(len);
+	UNUSED(buf);
+}
 
 static void dma_write(uint8_t *data, uint16_t size){
 	/* Reset DMA channel*/
-	dma_channel_reset(CONSOLE_USART_TX_DMA_STREAM, CONSOLE_USART_TX_DMA_CHANNEL);
+	dma_channel_reset(DMA1, DMA_CHANNEL4);
 
-	dma_set_peripheral_address(CONSOLE_USART_TX_DMA_STREAM, CONSOLE_USART_TX_DMA_CHANNEL, (uint32_t)&USART_DR(CONSOLE_USART_PORT));
-	dma_set_memory_address(CONSOLE_USART_TX_DMA_STREAM, CONSOLE_USART_TX_DMA_CHANNEL, (uint32_t)data);
-	dma_set_number_of_data(CONSOLE_USART_TX_DMA_STREAM, CONSOLE_USART_TX_DMA_CHANNEL, size);
-	dma_set_read_from_memory(CONSOLE_USART_TX_DMA_STREAM, CONSOLE_USART_TX_DMA_CHANNEL);
-	dma_enable_memory_increment_mode(CONSOLE_USART_TX_DMA_STREAM, CONSOLE_USART_TX_DMA_CHANNEL);
-	dma_set_peripheral_size(CONSOLE_USART_TX_DMA_STREAM, CONSOLE_USART_TX_DMA_CHANNEL, DMA_CCR_PSIZE_8BIT);
-	dma_set_memory_size(CONSOLE_USART_TX_DMA_STREAM, CONSOLE_USART_TX_DMA_CHANNEL, DMA_CCR_MSIZE_8BIT);
-	dma_set_priority(CONSOLE_USART_TX_DMA_STREAM, CONSOLE_USART_TX_DMA_CHANNEL, DMA_CCR_PL_VERY_HIGH);
+	dma_set_peripheral_address(DMA1, DMA_CHANNEL4, (uint32_t)&USART_DR(DMA_CHANNEL4));
+	dma_set_memory_address(DMA1, DMA_CHANNEL4, (uint32_t)data);
+	dma_set_number_of_data(DMA1, DMA_CHANNEL4, size);
+	dma_set_read_from_memory(DMA1, DMA_CHANNEL4);
+	dma_enable_memory_increment_mode(DMA1, DMA_CHANNEL4);
+	dma_set_peripheral_size(DMA1, DMA_CHANNEL4, DMA_CCR_PSIZE_8BIT);
+	dma_set_memory_size(DMA1, DMA_CHANNEL4, DMA_CCR_MSIZE_8BIT);
+	dma_set_priority(DMA1, DMA_CHANNEL4, DMA_CCR_PL_VERY_HIGH);
 
-	dma_enable_transfer_complete_interrupt(CONSOLE_USART_TX_DMA_STREAM, CONSOLE_USART_TX_DMA_CHANNEL);
+	dma_enable_transfer_complete_interrupt(DMA1, DMA_CHANNEL4);
 
-	dma_enable_channel(CONSOLE_USART_TX_DMA_STREAM, CONSOLE_USART_TX_DMA_CHANNEL);
+	dma_enable_channel(DMA1, DMA_CHANNEL4);
 
     usart_enable_tx_dma(CONSOLE_USART_PORT);
 }
 
 void dma1_channel4_isr(void)
 {
-	// if((dma_get_interrupt_flag(CONSOLE_USART_TX_DMA_STREAM, CONSOLE_USART_TX_DMA_CHANNEL, DMA_ISR_TCIF(CONSOLE_USART_TX_DMA_CHANNEL)) != 0)){
-	// 	dma_clear_interrupt_flags(CONSOLE_USART_TX_DMA_STREAM, CONSOLE_USART_TX_DMA_CHANNEL, DMA_IFCR_CTCIF(CONSOLE_USART_TX_DMA_CHANNEL));
+	// if((dma_get_interrupt_flag(DMA1, DMA_CHANNEL4, DMA_ISR_TCIF(DMA_CHANNEL4)) != 0)){
+	// 	dma_clear_interrupt_flags(DMA1, DMA_CHANNEL4, DMA_IFCR_CTCIF(DMA_CHANNEL4));
 	// 	transfered = 1;
 	// }
 
-	dma_disable_transfer_complete_interrupt(CONSOLE_USART_TX_DMA_STREAM, CONSOLE_USART_TX_DMA_CHANNEL);
+	dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL4);
 
 	usart_disable_tx_dma(CONSOLE_USART_PORT);
 
-	dma_disable_channel(CONSOLE_USART_TX_DMA_STREAM, CONSOLE_USART_TX_DMA_CHANNEL);
+	dma_disable_channel(DMA1, DMA_CHANNEL4);
 }
 
 static void dma_read(uint8_t *data, uint16_t size){
 	/* Reset DMA channel*/
-	dma_channel_reset(CONSOLE_USART_RX_DMA_STREAM, CONSOLE_USART_RX_DMA_CHANNEL);
+	dma_channel_reset(DMA1, DMA_CHANNEL5);
 
-	dma_set_peripheral_address(CONSOLE_USART_RX_DMA_STREAM, CONSOLE_USART_RX_DMA_CHANNEL, (uint32_t)&USART_DR(CONSOLE_USART_PORT));
-	dma_set_memory_address(CONSOLE_USART_RX_DMA_STREAM, CONSOLE_USART_RX_DMA_CHANNEL, (uint32_t)data);
-	dma_set_number_of_data(CONSOLE_USART_RX_DMA_STREAM, CONSOLE_USART_RX_DMA_CHANNEL, size);
-	dma_set_read_from_peripheral(CONSOLE_USART_RX_DMA_STREAM, CONSOLE_USART_RX_DMA_CHANNEL);
-	dma_enable_memory_increment_mode(CONSOLE_USART_RX_DMA_STREAM, CONSOLE_USART_RX_DMA_CHANNEL);
-	dma_set_peripheral_size(CONSOLE_USART_RX_DMA_STREAM, CONSOLE_USART_RX_DMA_CHANNEL, DMA_CCR_PSIZE_8BIT);
-	dma_set_memory_size(CONSOLE_USART_RX_DMA_STREAM, CONSOLE_USART_RX_DMA_CHANNEL, DMA_CCR_MSIZE_8BIT);
-	dma_set_priority(CONSOLE_USART_RX_DMA_STREAM, CONSOLE_USART_RX_DMA_CHANNEL, DMA_CCR_PL_HIGH);
+	dma_set_peripheral_address(DMA1, DMA_CHANNEL5, (uint32_t)&USART_DR(DMA_CHANNEL5));
+	dma_set_memory_address(DMA1, DMA_CHANNEL5, (uint32_t)data);
+	dma_set_number_of_data(DMA1, DMA_CHANNEL5, size);
+	dma_set_read_from_peripheral(DMA1, DMA_CHANNEL5);
+	dma_enable_memory_increment_mode(DMA1, DMA_CHANNEL5);
+	dma_set_peripheral_size(DMA1, DMA_CHANNEL5, DMA_CCR_PSIZE_8BIT);
+	dma_set_memory_size(DMA1, DMA_CHANNEL5, DMA_CCR_MSIZE_8BIT);
+	dma_set_priority(DMA1, DMA_CHANNEL5, DMA_CCR_PL_HIGH);
 
-	dma_enable_transfer_complete_interrupt(CONSOLE_USART_RX_DMA_STREAM, CONSOLE_USART_RX_DMA_CHANNEL);
+	dma_enable_transfer_complete_interrupt(DMA1, DMA_CHANNEL5);
 
-	dma_enable_channel(CONSOLE_USART_RX_DMA_STREAM, CONSOLE_USART_RX_DMA_CHANNEL);
+	dma_enable_channel(DMA1, DMA_CHANNEL5);
 
     usart_enable_rx_dma(CONSOLE_USART_PORT);
+	usart_enable_idle_interrupt(CONSOLE_USART_PORT);
 }
 
 void dma1_channel5_isr(void)
 {
-	// if(dma_get_interrupt_flag(CONSOLE_USART_RX_DMA_STREAM, CONSOLE_USART_RX_DMA_CHANNEL, DMA_ISR_TCIF(CONSOLE_USART_RX_DMA_CHANNEL)) != 0){
-	// 	dma_clear_interrupt_flags(CONSOLE_USART_RX_DMA_STREAM, CONSOLE_USART_RX_DMA_CHANNEL, DMA_IFCR_CTCIF(CONSOLE_USART_RX_DMA_CHANNEL));
+	// if(dma_get_interrupt_flag(DMA1, DMA_CHANNEL5, DMA_ISR_TCIF(DMA_CHANNEL5)) != 0){
+	// 	dma_clear_interrupt_flags(DMA1, DMA_CHANNEL5, DMA_IFCR_CTCIF(DMA_CHANNEL5));
 	// 	received = 1;
 	// }
 
-	dma_disable_transfer_complete_interrupt(CONSOLE_USART_RX_DMA_STREAM, CONSOLE_USART_RX_DMA_CHANNEL);
+	dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL5);
 
 	usart_disable_rx_dma(CONSOLE_USART_PORT);
 
-	dma_disable_channel(CONSOLE_USART_RX_DMA_STREAM, CONSOLE_USART_RX_DMA_CHANNEL);
+	dma_disable_channel(DMA1, DMA_CHANNEL5);
 }

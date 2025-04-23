@@ -20,6 +20,8 @@
         "usart.h": "c",
         "stdio.h": "c",
         "stdlib.h": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "string.h": "c",
+        "system_error": "c"
     }
 }

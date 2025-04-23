@@ -22,6 +22,7 @@ int main(void) {
     delay(10);
 	for (;;) {
         // console_print("System clock: %d\n", rcc_ahb_frequency);
+        console_run();
         console_print("Counter: %d\n", systick_get_counter());
         // LED_TOGGLE();
         delay(50);
@@ -36,8 +37,6 @@ static void clock_setup(void) {
     rcc_periph_clock_enable(RCC_GPIOA);
     rcc_periph_clock_enable(RCC_GPIOB);
     rcc_periph_clock_enable(RCC_GPIOC);
-
-    rcc_periph_clock_enable(CONSOLE_USART_DMA_RCC_CLK);
 
     rcc_periph_clock_enable(RCC_I2C2);
     rcc_periph_clock_enable(RCC_AFIO);
