@@ -17,7 +17,7 @@ int main(void) {
     hid_init();
     systick_init();
     console_init();
-    LED_RESET();
+
     // mpu_init();
     delay(10);
 	for (;;) {

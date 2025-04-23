@@ -50,7 +50,10 @@ void console_process_input(const char *input_line) {
 
 void console_run(void) {
     // char input[MAX_INPUT_LENGTH];
-	console_print("> ");
+	// console_print("> ");
+    // uint8_t input[100];
+    // console_usart_read(input, sizeof(input));
+    // console_usart_write(input, sizeof(input));
 	// TODO: implement this function
 	// if (console_usart_read_line(input, sizeof(input), stdin)) {
 	// 	console_process_input(input);

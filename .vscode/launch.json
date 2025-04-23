@@ -3,22 +3,24 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug with OpenOCD",
-            "type": "cortex-debug",
+            "name": "Cortex Debug",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/bin/simpit.elf",
             "request": "launch",
-            "servertype": "openocd",
-            "cwd": "${workspaceRoot}",
-            "executable": "${workspaceRoot}/build/bin/simpit.elf",
-            "configFiles": [
-                "${workspaceRoot}/build/tools/openocd.cfg"
-            ],
+            "type": "cortex-debug",
             "runToEntryPoint": "main",
-            "showDevDebugOutput": "vscode",
-            // "svdFile": "${workspaceRoot}/path/to/your_device.svd",
-            "postLaunchCommands": [
-                "break main",
-                "continue"
-            ]
+            "device": "stm32f1",
+            "servertype": "openocd",
+            "gdbPath": "gdb-multiarch",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f1x.cfg"
+            ],
+            // "preLaunchCommands": [
+            //     "monitor program ${workspaceFolder}/simpit.elf verify reset"
+            // ],
+            "preLaunchTask": "Debug",
+            "internalConsoleOptions": "neverOpen",
         }
     ]
 }

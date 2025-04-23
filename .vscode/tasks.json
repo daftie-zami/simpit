@@ -3,53 +3,21 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build Debug",
+            "label": "Flash",
             "type": "shell",
-            "command": "make",
-            "args": [
-                "all",
-                "DEBUG=TRUE"
-            ],
-            "problemMatcher": []
+            "command": "make flash DEBUG=FALSE",
+            "dependsOn": "Clean",
         },
         {
-            "label": "Build Release",
+            "label": "Debug",
             "type": "shell",
-            "command": "make",
-            "args": [
-                "all",
-                "DEBUG=FALSE"
-            ],
-            "problemMatcher": []
-        },
-        {
-            "label": "Flash Release",
-            "type": "shell",
-            "command": "make",
-            "args": [
-                "flash",
-                "DEBUG=FALSE"
-            ],
-            "problemMatcher": []
-        },
-        {
-            "label": "Flash Debug",
-            "type": "shell",
-            "command": "make",
-            "args": [
-                "flash",
-                "DEBUG=TRUE"
-            ],
-            "problemMatcher": []
+            "command": "make flash DEBUG=TRUE",
+            "dependsOn": "Clean",
         },
         {
             "label": "Clean",
             "type": "shell",
-            "command": "make",
-            "args": [
-                "clean"
-            ],
-            "problemMatcher": []
+            "command": "make clean"
         }
     ]
 }

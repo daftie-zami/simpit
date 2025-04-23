@@ -1,14 +1,17 @@
-#include "console_usart.h"
+#include <console/console_usart.h>
 #include <board.h>
 #include <utils.h>
+#include <led/led.h>
 #include <libopencm3/stm32/usart.h>
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/dma.h>
 #include <libopencm3/cm3/nvic.h>
 
+#if defined(CONSOLE_USART_USE_DMA)
 static void dma_write(uint8_t *data, uint16_t size);
 static void dma_read(uint8_t *data, uint16_t size);
+#endif
 
 // volatile uint8_t transfered = 0;
 // volatile uint8_t received = 0;
@@ -19,6 +22,8 @@ void console_usart_init(void){
             GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, CONSOLE_USART_PIN_TX);
     gpio_set_mode(CONSOLE_USART_GPIO_PORT, GPIO_MODE_OUTPUT_50_MHZ,
             GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, CONSOLE_USART_PIN_RX);
+
+
 
     // /* Enable clocks for USART1 port */
     rcc_periph_clock_enable(RCC_USART1);
@@ -31,21 +36,38 @@ void console_usart_init(void){
 	usart_set_parity(CONSOLE_USART_PORT, USART_PARITY_NONE);
 	usart_set_flow_control(CONSOLE_USART_PORT, USART_FLOWCONTROL_NONE);
 
+    usart_enable_rx_interrupt(CONSOLE_USART_PORT);
+
+	nvic_set_priority(NVIC_USART1_IRQ, 0);
+	nvic_enable_irq(NVIC_USART1_IRQ);
 	/* Finally enable the USART. */
 	usart_enable(CONSOLE_USART_PORT);
-
-	nvic_enable_irq(NVIC_USART1_IRQ);
 
 #ifdef CONSOLE_USART_USE_DMA
 	/* Enable clocks for DMA1 */
 	rcc_periph_clock_enable(RCC_DMA1);
 
-    nvic_set_priority(NVIC_DMA1_CHANNEL4_IRQ, 0);
+    nvic_set_priority(NVIC_DMA1_CHANNEL4_IRQ, 2);
 	nvic_enable_irq(NVIC_DMA1_CHANNEL4_IRQ);
 
-	nvic_set_priority(NVIC_DMA1_CHANNEL5_IRQ, 0);
+	nvic_set_priority(NVIC_DMA1_CHANNEL5_IRQ, 2);
 	nvic_enable_irq(NVIC_DMA1_CHANNEL5_IRQ);
 #endif
+}
+
+void usart1_isr(void) {
+	if (((USART_CR1(CONSOLE_USART_PORT) & USART_CR1_RXNEIE) != 0) &&
+	    ((USART_SR(CONSOLE_USART_PORT) & USART_SR_RXNE) != 0)) {
+
+		/* Indicate that we got data. */
+		LED_TOGGLE();
+
+		/* Retrieve the data from the peripheral. */
+		// data = usart_recv(CONSOLE_USART_PORT);
+
+		// /* Enable transmit interrupt so it sends back the data. */
+		// usart_enable_tx_interrupt(CONSOLE_USART_PORT);
+	}
 }
 
 void console_usart_write(uint8_t *buf, uint16_t len){
@@ -67,12 +89,14 @@ void console_usart_read(uint8_t *buf, uint16_t len){
     }
 #endif
 }
+
 //TODO: implement this function
 void console_usart_read_line(uint8_t *buf, uint16_t len){
 	UNUSED(len);
 	UNUSED(buf);
 }
 
+#if defined(CONSOLE_USART_USE_DMA)
 static void dma_write(uint8_t *data, uint16_t size){
 	/* Reset DMA channel*/
 	dma_channel_reset(DMA1, DMA_CHANNEL4);
@@ -141,3 +165,4 @@ void dma1_channel5_isr(void)
 
 	dma_disable_channel(DMA1, DMA_CHANNEL5);
 }
+#endif

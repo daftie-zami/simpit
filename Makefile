@@ -11,7 +11,7 @@ DEBUG ?= FALSE
 
 DEBUG_PROBE ?= STLINK
 
-V ?= 0
+V ?= 1
 
 BUILD_DIR  := build
 MK_DIR     := mk
@@ -44,8 +44,8 @@ test:
 include $(MK_DIR)/utils.mk
 include $(MK_DIR)/doxygen.mk
 include $(MK_DIR)/flags.mk
-include $(MK_DIR)/openocd.mk
 include $(MK_DIR)/rules.mk
+include $(MK_DIR)/openocd.mk
 include $(MK_DIR)/sysdiag.mk
 include $(MK_DIR)/toolchain.mk
 

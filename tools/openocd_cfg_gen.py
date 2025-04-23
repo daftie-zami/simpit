@@ -47,7 +47,6 @@ def main():
     set CHIPNAME {chipname}
     transport select hla_swd
     source [find {TARGETS[args.target]}]
-    # reset_config srst_only srst_nogate
     """
 
     cfg_path.write_text(content)
