@@ -5,13 +5,13 @@
         {
             "label": "Flash",
             "type": "shell",
-            "command": "make flash DEBUG=FALSE",
+            "command": "make flash DEBUG=FALSE V=0",
             "dependsOn": "Clean",
         },
         {
             "label": "Debug",
             "type": "shell",
-            "command": "make flash DEBUG=TRUE",
+            "command": "make flash DEBUG=TRUE V=0",
             "dependsOn": "Clean",
         },
         {

@@ -24,6 +24,9 @@
         "string.h": "c",
         "system_error": "c",
         "*.tcc": "c",
-        "gpio.h": "c"
-    }
+        "gpio.h": "c",
+        "console_usart.h": "c",
+        "stddef.h": "c"
+    },
+    "cortex-debug.variableUseNaturalFormat": false
 }

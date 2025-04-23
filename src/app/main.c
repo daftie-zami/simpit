@@ -4,6 +4,8 @@
 #include <hid/hid.h>
 #include <mpu6050/mpu6050.h>
 #include <console/console.h>
+#include <console/console_usart.h>
+#include <string.h>
 
 static void clock_setup(void);
 
@@ -14,17 +16,16 @@ int main(void) {
 
     //Modules
     led_init();
-    hid_init();
+    // hid_init();
     systick_init();
     console_init();
 
-    // mpu_init();
-    delay(10);
 	for (;;) {
-        // console_print("System clock: %d\n", rcc_ahb_frequency);
-        console_run();
-        console_print("Counter: %d\n", systick_get_counter());
-        // LED_TOGGLE();
+        static char line_buf[64];
+        if (console_usart_read_line(line_buf, sizeof(line_buf))) {
+            console_usart_write((uint8_t *)"Gelen: ", 7);
+            console_usart_write((uint8_t *)line_buf, strlen(line_buf));
+        }
         delay(50);
 	}
     return 0;
