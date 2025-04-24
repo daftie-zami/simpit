@@ -1,7 +1,5 @@
 #include "systick.h"
 
-#include <led.h>
-#include <hid.h>
 #include <libopencm3/cm3/systick.h>
 #include <libopencm3/cm3/nvic.h>
 
@@ -34,12 +32,6 @@ void delay(uint32_t ms){
 
 void sys_tick_handler(void){
     systick_delay++;
-    // static volatile uint32_t led_tick = 50;
-    // if((--led_tick) == 0){
-    //   LED_TOGGLE();
-    //   led_tick = 50;
-    // }
-    // hid_poll();
 }
 
 
