@@ -2,6 +2,23 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Cortex Debug Attach",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "external",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/bin/gcs_embedded.elf",
+            "gdbPath": "gdb-multiarch",
+            "runToEntryPoint": "main",
+            "gdbTarget": "localhost:3333",
+            "svdFile": "${workspaceFolder}/tools/STM32F411.svd",
+            "internalConsoleOptions": "openOnSessionStart",
+            "liveWatch": { // FIXME
+                "enabled": true,
+                "samplesPerSecond": 4
+            },
+        },
+        {
             "name": "Cortex Debug",
             "cwd": "${workspaceFolder}",
             "executable": "${workspaceFolder}/build/bin/simpit.elf",

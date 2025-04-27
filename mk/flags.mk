@@ -1,7 +1,7 @@
 ARCH_FLAGS = -mthumb -mcpu=cortex-m3 -msoft-float
 LDLIBS = -lm -lc -lnosys -L$(MODULE_DIR)/libopencm3/lib $(LIBOPENCM3)
 
-ifeq ($(DEBUG), TRUE)
+ifeq ($(DEBUG), 1)
     DEBUG_FLAG = -g3
     OPTIMIZE_FLAG = -Og
     DEBUG_MACRO = -D__DEBUG__

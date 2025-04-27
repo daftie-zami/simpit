@@ -7,7 +7,7 @@ PROJECT ?= simpit
 
 PLATFORM ?= STM32F1
 
-DEBUG ?= FALSE
+DEBUG ?= 0
 
 DEBUG_PROBE ?= STLINK
 
@@ -36,6 +36,10 @@ all: $(PROJECT)
 clean : 
 	@echo "$(RED)[CLEAN] Cleaning up...$(NO_COLOR)"
 	@rm -rf $(BUILD_DIR)
+
+lib:
+	@echo "$(GREEN)[LIB] Building libraries...$(NO_COLOR)"
+	$(Q)$(MAKE) -C $(MODULE_DIR)/libopencm3
 
 test: 
 	@echo "Running tests..."
