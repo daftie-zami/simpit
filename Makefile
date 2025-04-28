@@ -37,6 +37,11 @@ clean :
 	@echo "$(RED)[CLEAN] Cleaning up...$(NO_COLOR)"
 	@rm -rf $(BUILD_DIR)
 
+clang-format:
+	@echo "$(YELLOW)[FORMAT] Formatting code...$(NO_COLOR)"
+	$(Q)find . \( -path ./modules -o -path ./build -o -path ./external \) -prune -o -type f \( -name '*.c' -o -name '*.h' \) -exec clang-format -i {} +
+
+
 lib:
 	@echo "$(GREEN)[LIB] Building libraries...$(NO_COLOR)"
 	$(Q)$(MAKE) -C $(MODULE_DIR)/libopencm3

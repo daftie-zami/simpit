@@ -1,3 +1,3 @@
 #pragma once
 
-#define UNUSED(x) (void)(x)
+#define UNUSED(x) (void) (x)
